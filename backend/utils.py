@@ -5,28 +5,23 @@ from geopy.geocoders import Nominatim
 import os
 import json
 from pathlib import Path
-from google import genai
 from dotenv import load_dotenv
 
 env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
-api_key = os.environ.get("AIzaSyDv3-HI8XM32xDC_mkJfHyNCrhx4d5hqXs")
-# --- HACKATHON BYPASS ---
-# If the .env file STILL fails, delete the '#' on the next line and paste your key directly:
-# api_key = "AIzaSy_YOUR_ACTUAL_KEY_HERE..."
-# ------------------------
+api_key = os.environ.get("GOOGLE_API_KEY")
 
-if not api_key:
-    print(f"🚨 ERROR: Still cannot find GOOGLE_API_KEY in {env_path}")
+if api_key:
+    print("[OK] Found GOOGLE_API_KEY!")
+    try:
+        import google.generativeai as genai
+        client = genai.Client(api_key=api_key)
+    except Exception as e:
+        print(f"[WARN] Could not initialize AI client: {e}")
+        client = None
 else:
-    print("✅ SUCCESS: Found GOOGLE_API_KEY!")
-
-# Initialize the new SDK client
-try:
-    client = genai.Client(api_key=api_key)
-except Exception as e:
-    print(f"⚠️ Warning: Could not initialize AI client: {e}")
+    print(f"[WARN] GOOGLE_API_KEY not found in {env_path} - AI features will be limited")
     client = None
 
 
@@ -150,7 +145,7 @@ def select_transport_mode_with_ai(total_distance_km: float, cargo_weight_kg: flo
         return "ai_selected_vehicle", v_details
         
     except Exception as e:
-        print(f"⚠️ AI Routing Failed (Using Fallback): {e}")
+        print(f"[WARN] AI Routing Failed (Using Fallback): {e}")
         # Fallback to your original logic
         if cargo_weight_kg <= VEHICLE_DB["electric_van"]["max_weight"]:
             return "electric_van", VEHICLE_DB["electric_van"]

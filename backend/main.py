@@ -162,3 +162,7 @@ def get_optimized_route(request: LocationRequest):
         })
         
     return result
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
