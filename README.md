@@ -1,33 +1,58 @@
 # 🌱 EcoRoute Optimizer
 
-A full-stack AI-powered logistics optimization platform that reduces empty miles, lowers carbon emissions, and connects shippers with available truck capacity in real-time.
+> **AI Operating System for Sustainable Logistics**
 
-## 🎯 Features
+A full-stack AI-powered logistics optimization platform that reduces empty miles, lowers carbon emissions, connects shippers with available truck capacity, and uses advanced AI to predict demand and optimize freight operations.
 
-- **AI Route Engine**: Intelligent route optimization using Google Gemini AI + OR-Tools
-- **Live Freight Marketplace**: Real-time matching of shippers and carriers
-- **Carbon Impact Tracking**: Calculate and monitor CO₂ emissions per route
-- **LTL Pooling & Backhaul Detection**: Automatically identify opportunities to reduce empty miles
-- **Interactive Map Visualization**: Real-time route display with Leaflet
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![React](https://img.shields.io/badge/React-18-blue)
+![Python](https://img.shields.io/badge/Python-3.8+-green)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green)
+
+## 🚀 Production-Ready Features
+
+### Core Modules
+
+| Module | Description |
+|--------|-------------|
+| **AI Route Engine** | Intelligent route optimization using Google Gemini AI + OR-Tools constraint programming |
+| **Freight Marketplace** | Real-time matching of shippers and carriers with booking capabilities |
+| **Carbon Intelligence** | AI-powered emissions calculation with reduction strategies |
+| **Empty Miles Detection** | Automatic backhaul cargo and LTL pooling suggestions |
+| **Freight Pricing AI** | Dynamic pricing prediction based on distance, demand, and capacity |
+| **Demand Forecasting** | ML-powered logistics demand prediction for routes |
+| **Digital Twin** | Network simulation for what-if scenario analysis |
+| **AI Copilot** | Natural language assistant for logistics queries |
+| **Weather Integration** | Real-time weather insights affecting route planning |
 
 ## 📋 Prerequisites
 
-- Node.js v14+ and npm
-- Python 3.8+ and pip
-- Google Gemini API Key
+- **Node.js** v14+ and npm
+- **Python** 3.8+ and pip
+- **Google Gemini API Key** (for AI features)
 
-## 🚀 Quick Start
+## 🏃 Quick Start
 
-### Backend Setup
+### One-Command Startup
+
+```bash
+# Start both backend and frontend
+cd backend && pip install -r requirements.txt && python main.py &
+cd frontend && npm install && npm start
+```
+
+### Manual Setup
+
+#### 1. Backend Setup
 
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-Create `.env` file in the `backend/` directory:
-```
-GOOGLE_API_KEY=your_api_key_here
+Create `.env` file in `backend/`:
+```env
+GOOGLE_API_KEY=your_gemini_api_key_here
 ```
 
 Start the server:
@@ -35,9 +60,9 @@ Start the server:
 python main.py
 ```
 
-Server runs on `http://localhost:8000`
+Backend runs on `http://localhost:8000`
 
-### Frontend Setup
+#### 2. Frontend Setup
 
 ```bash
 cd frontend
@@ -47,76 +72,271 @@ npm start
 
 Frontend opens at `http://localhost:3000`
 
-## 📁 Project Structure
+## 🗂️ Project Structure
 
 ```
 eco-route-optimizer/
-├── frontend/                 # React + Tailwind CSS
+├── frontend/                    # React 18 + Tailwind CSS
 │   ├── src/
-│   ├── public/
+│   │   ├── pages/
+│   │   │   ├── Copilot.js          # AI Assistant
+│   │   │   ├── DemandForecast.js  # Demand Prediction
+│   │   │   ├── DigitalTwin.js     # Network Simulation
+│   │   │   └── PricingCalculator.js
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── store/
+│   │   │   └── index.js
+│   │   ├── App.js
+│   │   └── index.js
 │   └── package.json
-├── backend/                  # FastAPI + OR-Tools
+│
+├── backend/                     # FastAPI + Python
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── cache.py
+│   │   ├── database.py
+│   │   └── messaging.py
+│   ├── services/
+│   │   ├── freight_marketplace/
+│   │   ├── route_optimizer/
+│   │   ├── pricing_ai/
+│   │   ├── demand_prediction/
+│   │   ├── carbon_intelligence/
+│   │   ├── empty_miles/
+│   │   ├── digital_twin/
+│   │   ├── weather/
+│   │   └── copilot/
 │   ├── main.py
 │   ├── optimizer.py
 │   ├── utils.py
 │   └── requirements.txt
-├── data/                     # Data processing
+│
+├── data/
+│   ├── process_data.py
+│   └── raw_logistics.csv
+│
+├── docker-compose.yml          # Docker deployment
+├── nginx.conf                  # Reverse proxy
 └── README.md
 ```
 
 ## 🔌 API Endpoints
 
-- `GET /api/trucks` - Fetch all truck listings
-- `POST /api/trucks` - Add new truck listing
-- `POST /api/optimize` - Get optimized route
+### Core Endpoints
 
-## 🌍 Modules
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/trucks` | Fetch all truck listings |
+| POST | `/api/trucks` | Add new truck listing |
+| PUT | `/api/trucks/{id}` | Update truck status |
+| DELETE | `/api/trucks/{id}` | Delete truck listing |
+| GET | `/api/shipments` | Get all shipments |
+| POST | `/api/shipments` | Create new shipment |
+| POST | `/api/optimize` | Get optimized route |
 
-### 1. Ship Cargo
-Search for available truck capacity and book shipments
+### AI Endpoints
 
-### 2. List Fleet
-Post your truck routes and available capacity
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/predictions/demand` | Demand prediction |
+| POST | `/api/predictions/route` | Route efficiency prediction |
+| POST | `/api/predictions/carbon` | Carbon footprint prediction |
+| GET | `/api/analytics/summary` | Overall analytics |
+| GET | `/api/analytics/recent` | Recent optimizations |
+| GET | `/api/vehicles` | Available vehicle types |
+| GET | `/api/weather` | Weather insights |
 
-### 3. AI Optimizer
-Input delivery stops and get AI-optimized routes with:
-- Optimal vehicle selection
-- CO₂ emissions estimate
+### Documentation
+
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+## 🎨 UI Screens
+
+### 1. Landing Page
+- Hero section with feature highlights
+- Statistics showcase
+- Call-to-action buttons
+- Professional gradient design
+
+### 2. Dashboard
+- Real-time analytics cards
+- Carbon footprint charts (Area chart)
+- Fleet composition (Pie chart)
+- Recent route optimizations table
+
+### 3. Find Trucks (Marketplace)
+- Search filters (origin, destination, weight, cargo type)
+- Available trucks grid with details
+- Capacity visualization
+- Booking integration
+
+### 4. List Fleet
+- Post truck routes
+- Set capacity and pricing
+- Real-time database storage
+
+### 5. AI Route Engine
+- Multi-stop route input
+- Interactive map (Leaflet)
+- Multiple map layers (Standard, Satellite, Dark, Terrain)
+- Vehicle recommendations
+- CO₂ emissions calculation
 - LTL pooling opportunities
-- Cost calculation in INR
+- Backhaul suggestions
 
-## 📦 Tech Stack
+### 6. Pricing Calculator
+- Distance-based pricing
+- Cargo type multipliers
+- Fuel surcharge calculation
+- AI-generated price explanations
 
-**Frontend:**
-- React 18
-- Tailwind CSS
-- React-Leaflet
-- Lucide-react
+### 7. Demand Forecasting
+- Route-based demand predictions
+- Visual charts
+- High/Medium/Low demand indicators
+- Recommended truck counts
 
-**Backend:**
-- FastAPI
-- Python OR-Tools
-- Google Generative AI (Gemini)
-- SQLite
+### 8. Digital Twin
+- Network simulation
+- What-if scenarios
+- Truck/shipment/warehouse modeling
+- Traffic simulation
+
+### 9. AI Copilot
+- Natural language queries
+- Logistics advice
+- Route explanations
+- Cost optimization suggestions
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **React 18** - UI Framework
+- **Tailwind CSS** - Styling
+- **React-Leaflet** - Maps
+- **Recharts** - Charts
+- **Lucide React** - Icons
+- **Framer Motion** - Animations
+
+### Backend
+- **FastAPI** - Web Framework
+- **Python OR-Tools** - Constraint Optimization
+- **Google Gemini AI** - Generative AI
+- **SQLite** - Database
+- **Geopy** - Geocoding
+- **Pandas** - Data Processing
+
+### DevOps
+- **Docker** - Containerization
+- **Nginx** - Reverse Proxy
+
+## 🧮 AI Algorithms
+
+### Route Optimization
+- **Vehicle Routing Problem (VRP)** with capacity constraints
+- **Google OR-Tools** with constraint programming
+- Time windows and delivery deadlines
+- Multi-vehicle optimization
+
+### Demand Prediction
+- Time-based pattern analysis
+- Location intelligence
+- Cargo type weighting
+- Seasonal adjustments
+
+### Carbon Intelligence
+- Vehicle-specific emission factors
+- Load factor optimization
+- Route merge suggestions
+- Tree offset calculations
 
 ## 🐛 Troubleshooting
 
-- **Backend connection failed**: Ensure FastAPI is running on localhost:8000
-- **Geocoding issues**: Check internet connection
-- **Missing API key**: Create `.env` file with GOOGLE_API_KEY
-- **Map not loading**: Verify Leaflet CSS imports
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| Backend connection failed | Ensure FastAPI running on localhost:8000 |
+| Geocoding issues | Check internet connection |
+| Missing API key | Create `.env` with GOOGLE_API_KEY |
+| Map not loading | Verify Leaflet CSS imports |
+| Port already in use | Kill process on port or use different port |
+
+### Debug Commands
+
+```bash
+# Check if port is in use
+netstat -ano | findstr :3000
+
+# Kill process on port
+taskkill /PID <PID> /F
+
+# Backend verbose logging
+python -u main.py
+```
+
+## 📈 Performance
+
+- **Route Optimization**: ~30 seconds for complex routes
+- **API Response**: <100ms for cached data
+- **Frontend Load**: ~2 seconds
+- **Database**: SQLite with indexing
+
+## 🔒 Security
+
+- CORS enabled for development
+- Environment variables for secrets
+- Input validation with Pydantic
+- SQL injection prevention (parameterized queries)
+
+## 🚢 Deployment
+
+### Docker Compose
+
+```bash
+docker-compose up --build
+```
+
+### Manual Production
+
+```bash
+# Backend
+cd backend
+pip install -r requirements.txt
+gunicorn main:app -workers 4
+
+# Frontend
+cd frontend
+npm run build
+# Serve with nginx
+```
 
 ## 📝 License
 
-See CITATIONS.md for open-source licenses and attributions.
+See [CITATIONS.md](./CITATIONS.md) for open-source licenses and attributions.
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push and create a Pull Request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 🏆 Credits
+
+Built with ❤️ using:
+- Google OR-Tools
+- Google Gemini AI
+- FastAPI
+- React
+- Tailwind CSS
 
 ---
 
 **Built for sustainable logistics** 🚚🌍
+
+*Reduce empty miles. Lower emissions. Optimize everything.*
+

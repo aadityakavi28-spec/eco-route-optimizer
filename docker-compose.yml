@@ -1,0 +1,205 @@
+# Docker Compose - EcoRoute Optimizer Microservices
+# Run with: docker-compose up -d
+
+version: '3.8'
+
+services:
+  # API Gateway (Nginx)
+  api-gateway:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - freight-service
+      - optimizer-service
+      - pricing-service
+      - demand-service
+      - carbon-service
+      - empty-miles-service
+      - digital-twin-service
+      - weather-service
+      - copilot-service
+    networks:
+      - ecoroute-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgis/postgis:14-3.2
+    environment:
+      POSTGRES_USER: ecoroute
+      POSTGRES_PASSWORD: ecoroute123
+      POSTGRES_DB: ecoroute
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ecoroute-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - ecoroute-network
+
+  # Kafka (Event Streaming)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - ecoroute-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - ecoroute-network
+
+  # Freight Marketplace Service
+  freight-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.service
+    command: python -m uvicorn services.freight_marketplace.main:app --host 0.0.0.0 --port 8001
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://ecoroute:ecoroute123@postgres:5432/ecoroute
+      - REDIS_HOST=redis
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+    networks:
+      - ecoroute-network
+
+  # Route Optimizer Service
+  optimizer-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.service
+    command: python -m uvicorn services.route_optimizer.main:app --host 0.0.0.0 --port 8002
+    ports:
+      - "8002:8002"
+    networks:
+      - ecoroute-network
+
+  # Pricing AI Service
+  pricing-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.service
+    command: python -m uvicorn services.pricing_ai.main:app --host 0.0.0.0 --port 8003
+    ports:
+      - "8003:8003"
+    networks:
+      - ecoroute-network
+
+  # Demand Prediction Service
+  demand-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.service
+    command: python -m uvicorn services.demand_prediction.main:app --host 0.0.0.0 --port 8004
+    ports:
+      - "8004:8004"
+    networks:
+      - ecoroute-network
+
+  # Carbon Intelligence Service
+  carbon-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.service
+    command: python -m uvicorn services.carbon_intelligence.main:app --host 0.0.0.0 --port 8005
+    ports:
+      - "8005:8005"
+    networks:
+      - ecoroute-network
+
+  # Empty Miles Detection Service
+  empty-miles-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.service
+    command: python -m uvicorn services.empty_miles.main:app --host 0.0.0.0 --port 8006
+    ports:
+      - "8006:8006"
+    networks:
+      - ecoroute-network
+
+  # Digital Twin Service
+  digital-twin-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.service
+    command: python -m uvicorn services.digital_twin.main:app --host 0.0.0.0 --port 8007
+    ports:
+      - "8007:8007"
+    networks:
+      - ecoroute-network
+
+  # Weather Service
+  weather-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.service
+    command: python -m uvicorn services.weather.main:app --host 0.0.0.0 --port 8008
+    ports:
+      - "8008:8008"
+    networks:
+      - ecoroute-network
+
+  # AI Copilot Service
+  copilot-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.service
+    command: python -m uvicorn services.copilot.main:app --host 0.0.0.0 --port 8009
+    ports:
+      - "8009:8009"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    networks:
+      - ecoroute-network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - freight-service
+      - optimizer-service
+      - pricing-service
+      - demand-service
+      - carbon-service
+    networks:
+      - ecoroute-network
+
+volumes:
+  postgres_data:
+
+networks:
+  ecoroute-network:
+    driver: bridge
+
